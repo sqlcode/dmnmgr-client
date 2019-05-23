@@ -64,7 +64,7 @@ export class TestDecisionService {
         return this.dmnXmlService
             .getXmlModels('editor')
             .pipe(
-                switchMap(xml => this._http.post<DeploymentResponse>(this.getUrl('decision'), { xml: xml }))
+                switchMap(xml => this.doDeploy(xml))
             );
     }
 
@@ -82,9 +82,13 @@ export class TestDecisionService {
         return this.dmnXmlService
             .getXmlModels('editor')
             .pipe(
-                switchMap(xml => this._http.post<DeploymentResponse>(this.getUrl('decision'), { xml: xml })),
+                switchMap(xml => this.doDeploy(xml)),
                 switchMap(deployment => this.testDecision(test, deployment.decisionRequirementsId, this._currentArtefactId))
             );
+    }
+
+    private doDeploy(xml: string) {
+        return this._http.post<DeploymentResponse>(this.getUrl('decision'), { xml: xml });
     }
 
     public clearProcessEngine() {
